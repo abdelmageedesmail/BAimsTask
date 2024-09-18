@@ -5,7 +5,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("kotlinx-serialization")
-
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -71,6 +71,7 @@ dependencies {
     // dagger - Hilt
     implementation(libs.hilt.android)
     implementation(libs.firebase.dataconnect)
+    implementation(libs.firebase.crashlytics.buildtools)
     kapt(libs.hilt.compiler)
 
     //ktor
@@ -83,6 +84,12 @@ dependencies {
 
     //loading
     implementation(libs.android.spinkit)
+
+    //Room Database
+    implementation(libs.androidx.room.ktx.v251)
+    annotationProcessor(libs.androidx.room.compiler)
+
+    ksp(libs.androidx.room.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

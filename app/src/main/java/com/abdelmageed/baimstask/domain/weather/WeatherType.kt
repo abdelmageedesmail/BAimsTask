@@ -2,7 +2,9 @@ package com.abdelmageed.baimstask.domain.weather
 
 import androidx.annotation.DrawableRes
 import com.abdelmageed.baimstask.R
+import kotlinx.serialization.Serializable
 
+@Serializable
 sealed class WeatherType(
     val weatherDesc: String,
     @DrawableRes val iconRes: Int

@@ -19,4 +19,14 @@ class InvokeHomeUseCase @Inject constructor(private val homeRepository: HomeRepo
         return homeRepository.getWeatherDetails(lat, lon)
     }
 
+    suspend fun saveWeatherDetails(
+        cityName: String,
+        list: List<WeatherModel>
+    ): Flow<BaseResult<Boolean, String>> {
+        return homeRepository.saveWeatherDetails(cityName, list)
+    }
+
+    suspend fun getWeatherData(cityName: String): Flow<BaseResult<List<WeatherModel>, String>> {
+        return homeRepository.getWeatherData(cityName)
+    }
 }

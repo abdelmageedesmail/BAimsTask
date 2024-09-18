@@ -13,4 +13,11 @@ interface HomeRepository {
         lon: Double
     ): Flow<BaseResult<List<WeatherModel>, String>>
 
+
+    suspend fun saveWeatherDetails(
+        cityName: String,
+        list: List<WeatherModel>
+    ): Flow<BaseResult<Boolean, String>>
+
+    suspend fun getWeatherData(cityName: String): Flow<BaseResult<List<WeatherModel>, String>>
 }
