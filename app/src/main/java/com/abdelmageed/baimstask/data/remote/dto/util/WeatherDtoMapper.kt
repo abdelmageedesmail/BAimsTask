@@ -1,6 +1,5 @@
 package com.abdelmageed.baimstask.data.remote.dto.util
 
-import android.util.Log
 import com.abdelmageed.baimstask.data.model.WeatherModel
 import com.abdelmageed.baimstask.data.remote.dto.response.WeatherResponse
 import com.abdelmageed.baimstask.domain.weather.WeatherType
@@ -12,7 +11,6 @@ class WeatherDtoMapper : EntityMapper<WeatherResponse, List<WeatherModel>> {
     override fun mapFromEntity(entity: WeatherResponse): List<WeatherModel> {
         val weatherList = mutableListOf<WeatherModel>()
         entity.list?.forEach {
-            it?.weather?.get(0)?.main?.let { it1 -> Log.e("weatherData", it1) }
             weatherList.add(
                 WeatherModel(
                     it?.main?.temp,
