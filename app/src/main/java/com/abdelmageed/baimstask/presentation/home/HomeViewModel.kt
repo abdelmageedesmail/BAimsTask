@@ -76,6 +76,37 @@ class HomeViewModel @Inject constructor(private val invokeHomeUseCase: InvokeHom
         }
         return map
     }
+
+    fun saveWeatherDetailsInDb(cityName: String, list: List<WeatherModel>) {
+        viewModelScope.launch {
+            invokeHomeUseCase.saveWeatherDetails(cityName, list).catch {
+                _state.value = HomeFragmentState.Error(it.message.toString())
+            }.collect {
+                when (it) {
+                    is BaseResult.Success -> _state.value =
+                        HomeFragmentState.SuccessAddedToDb(it.data)
+
+                    is BaseResult.Error -> _state.value = HomeFragmentState.Error(it.error)
+                }
+            }
+        }
+    }
+
+    fun getWeatherDetailsFromDb(cityName: String) {
+        viewModelScope.launch {
+            invokeHomeUseCase.getWeatherData(cityName).catch {
+                Log.e("exceptionCititesDb", "${it.message.toString()}")
+                _state.value = HomeFragmentState.Error(it.message.toString())
+            }.collect {
+                when (it) {
+                    is BaseResult.Success -> _state.value =
+                        HomeFragmentState.SuccessGetWeatherDetails(it.data)
+
+                    is BaseResult.Error -> _state.value = HomeFragmentState.Error(it.error)
+                }
+            }
+        }
+    }
 }
 
 sealed class HomeFragmentState {
@@ -85,5 +116,6 @@ sealed class HomeFragmentState {
     data class SuccessGetWeatherDetails(val weatherResponse: List<WeatherModel>?) :
         HomeFragmentState()
 
+    data class SuccessAddedToDb(val isSuccessful: Boolean) : HomeFragmentState()
     data class Error(val message: String) : HomeFragmentState()
 }

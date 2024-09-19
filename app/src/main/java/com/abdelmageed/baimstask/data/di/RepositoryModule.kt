@@ -1,5 +1,6 @@
 package com.abdelmageed.baimstask.data.di
 
+import com.abdelmageed.baimstask.data.locale.WeatherDao
 import com.abdelmageed.baimstask.data.remote.repository.HomeRepositoryImpl
 import com.abdelmageed.baimstask.domain.HomeRepository
 import dagger.Module
@@ -21,6 +22,6 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideHomeRepository(httpClient: HttpClient): HomeRepository =
-        HomeRepositoryImpl(httpClient, getApiKey())
+    fun provideHomeRepository(httpClient: HttpClient, dao: WeatherDao): HomeRepository =
+        HomeRepositoryImpl(httpClient, getApiKey(), dao)
 }

@@ -21,6 +21,8 @@ import com.abdelmageed.baimstask.data.remote.dto.response.CitiesItem
 import com.abdelmageed.baimstask.databinding.FragmentHomeBinding
 import com.abdelmageed.baimstask.extension.getCurrentDate
 import com.abdelmageed.baimstask.extension.gone
+import com.abdelmageed.baimstask.extension.isOnline
+import com.abdelmageed.baimstask.extension.previewFromStoredDataDialog
 import com.abdelmageed.baimstask.extension.showToast
 import com.abdelmageed.baimstask.extension.visible
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,6 +35,7 @@ import java.util.Date
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
+    private var cityName: String? = null
     private lateinit var hourlyForecastAdapter: HourlyForecastAdapter
     private val viewModel by viewModels<HomeViewModel>()
     private lateinit var binding: FragmentHomeBinding
@@ -66,6 +69,7 @@ class HomeFragment : Fragment() {
                 readDataFromAssets()
             }
 
+
         }
     }
 
@@ -81,8 +85,18 @@ class HomeFragment : Fragment() {
             is HomeFragmentState.SuccessGetCities -> handleGetCities(state.cities)
             is HomeFragmentState.Error -> {
                 requireActivity().showToast(state.message)
-                binding.frError.visible()
-                binding.cardHourlyForeCast.gone()
+                previewFromStoredDataDialog {
+                    if (it == 1) {
+                        viewModel.getWeatherDetailsFromDb(cityName ?: "")
+                    } else {
+                        binding.frError.visible()
+                        binding.cardHourlyForeCast.gone()
+                    }
+                }
+            }
+
+            is HomeFragmentState.SuccessAddedToDb -> {
+                Log.e("added", "addedSuccessfully")
             }
 
             is HomeFragmentState.SuccessGetWeatherDetails -> updateWeatherDetails(state.weatherResponse)
@@ -106,38 +120,48 @@ class HomeFragment : Fragment() {
         Log.e("weatherDataList", "$weatherResponse")
         binding.cardHourlyForeCast.visible()
         weatherResponse?.let {
-            binding.apply {
-                tvWind.text = "${weatherResponse[0].windSpeed} km/h"
-                tvHumidity.text = "${weatherResponse[0].humidity}%"
-                tvWeatherStatus.text = "${weatherResponse[0].windDesc}"
-                tvTemp.text = "${weatherResponse[0].temp} ℃"
-                tvStatus.text = weatherResponse[0].weatherType.weatherDesc
-                if (::hourlyForecastAdapter.isInitialized) {
-                    hourlyForecastAdapter.clear()
-                }
-                hourlyForecastAdapter.addItems(weatherResponse.toMutableList())
-
-                val firstIndexOfDateList = viewModel.getFirstIndexOfDateList(weatherResponse)
-
-                rvWeather.adapter =
-                    DailyForecastAdapter(firstIndexOfDateList.values.toMutableList()) {
-
-                        tvWind.text = "${it.windSpeed} km/h"
-                        tvHumidity.text = "${it.humidity}%"
-                        tvWeatherStatus.text = "${it.windDesc}"
-                        tvTemp.text = "${it.temp} ℃"
-                        tvStatus.text = it.weatherType.weatherDesc
-
+            if (weatherResponse.isNotEmpty()) {
+                viewModel.saveWeatherDetailsInDb(
+                    cityName ?: "",
+                    weatherResponse
+                )
+                binding.apply {
+                    tvWind.text = "${weatherResponse[0].windSpeed} km/h"
+                    tvHumidity.text = "${weatherResponse[0].humidity}%"
+                    tvWeatherStatus.text = "${weatherResponse[0].windDesc}"
+                    tvTemp.text = "${weatherResponse[0].temp} ℃"
+                    tvStatus.text = weatherResponse[0].weatherType.weatherDesc
+                    if (::hourlyForecastAdapter.isInitialized) {
                         hourlyForecastAdapter.clear()
-                        hourlyForecastAdapter.addItems(
-                            viewModel.getDayWeather(
-                                weatherResponse,
-                                it.formattedDate?.get(Calendar.DAY_OF_MONTH) ?: 0
-                            )
-                        )
                     }
-                rvWeather.layoutManager =
-                    LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+                    hourlyForecastAdapter.addItems(weatherResponse.toMutableList())
+
+                    val firstIndexOfDateList = viewModel.getFirstIndexOfDateList(weatherResponse)
+
+                    rvWeather.adapter =
+                        DailyForecastAdapter(firstIndexOfDateList.values.toMutableList()) {
+
+                            tvWind.text = "${it.windSpeed} km/h"
+                            tvHumidity.text = "${it.humidity}%"
+                            tvWeatherStatus.text = "${it.windDesc}"
+                            tvTemp.text = "${it.temp} ℃"
+                            tvStatus.text = it.weatherType.weatherDesc
+
+                            hourlyForecastAdapter.clear()
+                            hourlyForecastAdapter.addItems(
+                                viewModel.getDayWeather(
+                                    weatherResponse,
+                                    it.formattedDate?.get(Calendar.DAY_OF_MONTH) ?: 0
+                                )
+                            )
+                        }
+                    rvWeather.layoutManager =
+                        LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+                }
+            } else {
+                requireActivity().showToast("No Weather Data Available")
+                binding.noData.visible()
+                binding.constraintWeatherData.gone()
             }
         }
     }
@@ -169,10 +193,25 @@ class HomeFragment : Fragment() {
                         )
                     )
                     val selectedObject = binding.spCities.selectedItem as CitiesItem
-                    viewModel.getWeatherDetails(
-                        selectedObject.lat ?: 0.0,
-                        selectedObject.lon ?: 0.0
-                    )
+                    cityName = selectedObject.cityNameEn
+                    if (requireActivity().isOnline()) {
+                        viewModel.getWeatherDetails(
+                            selectedObject.lat ?: 0.0,
+                            selectedObject.lon ?: 0.0
+                        )
+                    } else {
+                        previewFromStoredDataDialog {
+                            if (it == 1) {
+                                viewModel.getWeatherDetailsFromDb(cityName ?: "")
+                            } else {
+                                binding.frError.visible()
+                                binding.cardHourlyForeCast.gone()
+                            }
+                        }
+
+                    }
+
+
                 }
             }
 

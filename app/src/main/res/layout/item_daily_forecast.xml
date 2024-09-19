@@ -20,6 +20,7 @@
                 android:layout_margin="@dimen/_10sdp"
                 android:text="22/9"
                 android:textColor="@color/white"
+                android:fontFamily="@font/font_bold"
                 android:textSize="@dimen/_11ssp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -31,6 +32,7 @@
                 android:layout_margin="@dimen/_10sdp"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:text="Tus"
+                android:fontFamily="@font/font_bold"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_11ssp"
                 app:layout_constraintStart_toEndOf="@+id/tvDate"
@@ -43,6 +45,7 @@
                 android:layout_margin="@dimen/_10sdp"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:text="Tus"
+                android:fontFamily="@font/font_mid"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_11ssp"
                 app:layout_constraintEnd_toEndOf="parent"
