@@ -10,9 +10,9 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/ivImage"
+            style="@style/Widget.Material3.Button.IconButton.Outlined"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Material3.Button.IconButton.Outlined"
             app:iconTint="#646f79"
             app:layout_constraintEnd_toEndOf="@+id/tvTime"
             app:layout_constraintStart_toStartOf="@id/tvTime"
@@ -22,6 +22,7 @@
             android:id="@+id/tvTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/font_bold"
             android:textColor="#3C3D37"
             android:textSize="@dimen/_10ssp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -32,6 +33,7 @@
             android:id="@+id/tvTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/font_reg"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

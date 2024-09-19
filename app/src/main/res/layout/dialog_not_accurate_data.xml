@@ -34,6 +34,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_10sdp"
+                    android:fontFamily="@font/font_bold"
                     android:gravity="center"
                     android:text="Can't fetch data right now so we will show data from stored data. The data might not be accurate so if you want to show data please confirm and ignore this message"
                     android:textColor="@color/black"

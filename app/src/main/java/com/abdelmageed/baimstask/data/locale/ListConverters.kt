@@ -1,11 +1,9 @@
 package com.abdelmageed.baimstask.data.locale
 
-import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.abdelmageed.baimstask.data.model.WeatherModel
 import com.abdelmageed.baimstask.domain.weather.WeatherType
 import com.abdelmageed.baimstask.domain.weather.WeatherTypeAdapter
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 

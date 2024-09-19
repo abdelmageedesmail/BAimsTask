@@ -160,6 +160,8 @@ class HomeFragment : Fragment() {
                 }
             } else {
                 requireActivity().showToast("No Weather Data Available")
+                binding.noData.visible()
+                binding.constraintWeatherData.gone()
             }
         }
     }
